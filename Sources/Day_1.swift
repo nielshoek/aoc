@@ -1,17 +1,28 @@
 public enum Day_1 {
-    public static func Run(input _: [String]?) -> Int {
+    public static func Run() -> Int {
         let data = "Inputs/day1.txt".ToStringArray().map { Int($0)! }
-        return Logic(input: data)
+        return LogicB(input: data)
     }
 
-    public static func Logic(input: [Int]) -> Int {
+    public static func LogicA(input: [Int]) -> Int {
         var count = 0
-        var previous = Int.max
-        for element in input {
-            if element > previous {
+        for i in 0 ... input.count - 2 {
+            if input[i + 1] > input[i] {
                 count += 1
             }
-            previous = element
+        }
+
+        return count
+    }
+
+    public static func LogicB(input: [Int]) -> Int {
+        var count = 0
+        for i in 0 ... input.count - 4 {
+            let leftSum = input[i] + input[i + 1] + input[i + 2]
+            let rightSum = input[i + 1] + input[i + 2] + input[i + 3]
+            if rightSum > leftSum {
+                count += 1
+            }
         }
 
         return count
