@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:sandbox}",
+            "name": "Debug sandbox",
+            "program": "${workspaceFolder:sandbox}/.build/debug/sandbox",
+            "preLaunchTask": "swift: Build Debug sandbox"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:sandbox}",
+            "name": "Release sandbox",
+            "program": "${workspaceFolder:sandbox}/.build/release/sandbox",
+            "preLaunchTask": "swift: Build Release sandbox"
+        }
+    ]
+}
