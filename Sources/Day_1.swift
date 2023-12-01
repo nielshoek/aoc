@@ -1,12 +1,13 @@
 public enum Day_1 {
-    public static func Run() -> Int {
+    public static func Run() {
         let data = "Inputs/day1.txt".ToStringArray()
-        return LogicB(input: data)
+        print("Part 1: \(LogicA(input: data))")
+        print("Part 2: \(LogicB(input: data))")
     }
 
     public static func LogicA(input: [String]) -> Int {
         var count = 0
-        input.forEach { line in
+        for line in input {
             let nr1 = line.first { char in
                 char.isNumber
             }!
@@ -21,7 +22,7 @@ public enum Day_1 {
 
     public static func LogicB(input: [String]) -> Int {
         var count = 0
-        input.forEach { line in
+        for line in input {
             let leftNr = getLeft(line: line)
             let rightNr = getRight(line: line)
             count += Int(leftNr + rightNr)!
