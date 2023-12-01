@@ -22,16 +22,8 @@ public enum Day_1 {
     public static func LogicB(input: [String]) -> Int {
         var count = 0
         input.forEach { line in
-            // Left
             let leftNr = getLeft(line: line)
-
-            // Right
             let rightNr = getRight(line: line)
-
-            if leftNr == "" && rightNr == "" {
-                print("HEY")
-            }
-
             count += Int(leftNr + rightNr)!
         }
 
