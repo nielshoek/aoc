@@ -7,10 +7,10 @@
                 "swift"
             ],
             "args": [],
-            "cwd": "${workspaceFolder:sandbox}",
-            "name": "Debug sandbox",
-            "program": "${workspaceFolder:sandbox}/.build/debug/sandbox",
-            "preLaunchTask": "swift: Build Debug sandbox"
+            "cwd": "${workspaceFolder:aoc-2023-swift}",
+            "name": "Debug aoc-2023-swift",
+            "program": "${workspaceFolder:aoc-2023-swift}/.build/debug/aoc-2023-swift",
+            "preLaunchTask": "swift: Build Debug aoc-2023-swift"
         },
         {
             "type": "lldb",
@@ -19,10 +19,10 @@
                 "swift"
             ],
             "args": [],
-            "cwd": "${workspaceFolder:sandbox}",
-            "name": "Release sandbox",
-            "program": "${workspaceFolder:sandbox}/.build/release/sandbox",
-            "preLaunchTask": "swift: Build Release sandbox"
+            "cwd": "${workspaceFolder:aoc-2023-swift}",
+            "name": "Release aoc-2023-swift",
+            "program": "${workspaceFolder:aoc-2023-swift}/.build/release/aoc-2023-swift",
+            "preLaunchTask": "swift: Build Release aoc-2023-swift"
         }
     ]
 }

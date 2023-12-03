@@ -1,4 +1,4 @@
-public enum Day_1 {
+public enum Day1 {
     public static func Run() {
         let data = "Inputs/day1.txt".ToStringArray()
         print("Part 1: \(LogicA(input: data))")
