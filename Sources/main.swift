@@ -1,1 +1,1 @@
-Day2().Run()
+Day4().Run()
