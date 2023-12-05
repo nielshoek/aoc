@@ -21,13 +21,51 @@ public struct Day5 {
             mappings.append(mappingRange)
         }
 
+        let lowest = findLowestLocationInSeeds(seeds: seeds, mappings: mappings)
+
+        return lowest
+    }
+
+    public func LogicB(input: [String]) -> Int {
+        let parts = input.split(separator: "")
+        let seeds = getSeeds(line: input[0])
+        var mappings = [[MappingRange]]()
+        for mappingConfig in parts[1...] {
+            let mappingRange = createMappingRanges(lines: mappingConfig)
+            mappings.append(mappingRange)
+        }
+
+        var minValue = Int.max
+        for seedIndex in stride(from: 0, through: seeds.count - 1, by: 2) {
+            print("Seed range \(seedIndex)")
+            let seed = seeds[seedIndex]
+            for seedValue in seed ..< seed + seeds[seedIndex + 1] {
+                var currentValue = seedValue
+                for mapping in mappings {
+                    for mappingRange in mapping {
+                        if mappingRange.range.contains(currentValue) {
+                            currentValue += mappingRange.diff
+                            break
+                        }
+                    }
+                }
+                if currentValue < minValue {
+                    minValue = currentValue
+                }
+            }
+        }
+
+        return minValue
+    }
+
+    private func findLowestLocationInSeeds(seeds: [Int], mappings: [[MappingRange]]) -> Int {
         var minValue = Int.max
         for seed in seeds {
             var currentValue = seed
             for mapping in mappings {
                 for mappingRange in mapping {
                     if mappingRange.range.contains(currentValue) {
-                        currentValue +=  mappingRange.diff
+                        currentValue += mappingRange.diff
                         break
                     }
                 }
@@ -38,10 +76,6 @@ public struct Day5 {
         }
 
         return minValue
-    }
-
-    public func LogicB(input _: [String]) -> Int {
-        return 0
     }
 
     private func createMappingRanges(lines: ArraySlice<String>) -> [MappingRange] {
