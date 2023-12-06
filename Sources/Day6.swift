@@ -37,11 +37,11 @@ public struct Day6 {
     }
 
     public func LogicB(input: [String]) -> Int {
-        let time = parse(line: input[0])
+        let maxTime = parse(line: input[0])
         let record = parse(line: input[1])
         var ways = 0
-        for speed in 0 ... time {
-            let time = time - speed
+        for speed in 0 ... maxTime {
+            let time = maxTime - speed
             if speed * time > record {
                 ways += 1
             }
