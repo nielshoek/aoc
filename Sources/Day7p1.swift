@@ -14,7 +14,7 @@ public struct Day7 {
         let rawStrength: Int
     }
 
-    public func LogicA(input: [String]) -> Int {
+    fileprivate func LogicA(input: [String]) -> Int {
         var hands = [Hand]()
         for line in input {
             hands.append(createHandFrom(line: line))
@@ -34,11 +34,7 @@ public struct Day7 {
         return count
     }
 
-    public func LogicB(input _: [String]) -> Int {
-        return 0
-    }
-
-    func createHandFrom(line: String) -> Hand {
+    fileprivate func createHandFrom(line: String) -> Hand {
         let parts = line.components(separatedBy: " ")
         let cards = parts[0]
         let bid = Int(parts[1])!
@@ -55,7 +51,7 @@ public struct Day7 {
     // Two pair                      | typeStrength: 3
     // One pair                      | typeStrength: 2
     // High card (Nothing basically) | typeStrength: 1
-    private func determineTypeStrength(chars: [Character]) -> Int {
+    fileprivate func determineTypeStrength(chars: [Character]) -> Int {
         // Five of a kind
         if Set(chars).count == 1 {
             return 7
@@ -96,14 +92,9 @@ public struct Day7 {
         return -1
     }
 
-    // T  10  Hex: A
-    // J  11  Hex: B
-    // Q  12  Hex: C
-    // K  13  Hex: D
-    // A  14  Hex: E
-    private func determineRawStrength(chars: [Character]) -> Int {
+    fileprivate func determineRawStrength(chars: [Character]) -> Int {
         let hexString = chars.reduce(into: "") { acc, cur in
-            if let nr = Int(String(cur)) {
+            if Int(String(cur)) != nil {
                 return acc += String(cur)
             } else {
                 switch cur {
