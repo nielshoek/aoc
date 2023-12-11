@@ -7,3 +7,9 @@ runf:
 
 test:
 	swift test
+
+swiftf:
+	swift run -Xswiftc -O
+
+swiftd:
+	swift run
