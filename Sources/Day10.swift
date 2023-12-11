@@ -20,12 +20,9 @@ public struct Day10 {
 
         solve(point: (row: point.row, col: point.col))
         let values = visitedFields.values.map { Int($0) }.sorted()
-        
+
         return values.last!
     }
-
-    // | - L J 7 F
-    // Implement with queue
 
     private mutating func solve(point: Point) {
         queue.append((point, 0))
@@ -86,8 +83,95 @@ public struct Day10 {
         }
     }
 
-    public func LogicB(input _: [String]) -> Int {
-        0
+    public mutating func LogicB(input: [String]) -> Int {
+        visitedFields = [String: Int]()
+        grid = parse(input: input)
+        let point = findSPosition(input: grid)
+        markPath(point: point)
+        walkPath(point: point)
+
+        return 0
+    }
+
+    private mutating func walkPath(point: Point) {
+        
+    }
+
+    fileprivate var queue2 = Deque<(Point, Direction)>()
+    private mutating func markPath(point: Point) {
+        queue2.append((point, .Up))
+        while !queue.isEmpty {
+            let pointAndDirection = queue2.popFirst()!
+            let cur = pointAndDirection.0
+            let direction = pointAndDirection.1
+            grid[cur.row][cur.col] = "X"
+            // Up       -> Right
+            // Right    -> Down
+            // Down     -> Left
+            // Left     -> Up
+
+
+            let signature = String(cur.row) + ":" + String(cur.col)
+            visitedFields[signature] = 1
+            let curChar = grid[cur.row][cur.col]
+
+            if curChar == "|" || curChar == "L" || curChar == "J" || curChar == "S" {
+                let up = (row: cur.row - 1, col: cur.col)
+                let upChar = getField(point: up)
+                if upChar == "|" || upChar == "7" || upChar == "F" {
+                    let upSig = String(up.row) + ":" + String(up.col)
+                    if visitedFields[upSig] == nil {
+                        queue2.append((up, .Up))
+                    }
+                }
+            }
+
+            if curChar == "-" || curChar == "L" || curChar == "F" || curChar == "S" {
+                let right = (row: cur.row, col: cur.col + 1)
+                let rightChar = getField(point: right)
+                if rightChar == "-" || rightChar == "J" || rightChar == "7" {
+                    let rightSig = String(right.row) + ":" + String(right.col)
+                    if visitedFields[rightSig] == nil {
+                        queue2.append((right, .Right))
+                    }
+                }
+            }
+
+            if curChar == "|" || curChar == "7" || curChar == "F" || curChar == "S" {
+                let down = (row: cur.row + 1, col: cur.col)
+                let downChar = getField(point: down)
+                if downChar == "|" || downChar == "J" || downChar == "L" {
+                    let downSig = String(down.row) + ":" + String(down.col)
+                    if visitedFields[downSig] == nil {
+                        queue2.append((down, .Down))
+                    }
+                }
+            }
+
+            if curChar == "-" || curChar == "7" || curChar == "J" || curChar == "S" {
+                let left = (row: cur.row, col: cur.col - 1)
+                let leftChar = getField(point: left)
+                if leftChar == "-" || leftChar == "F" || leftChar == "L" {
+                    let leftSig = String(left.row) + ":" + String(left.col)
+                    if visitedFields[leftSig] == nil {
+                        queue2.append((left, .Left))
+                    }
+                }
+            }
+        }
+    }
+
+    private func getFieldToCheck(point: Point, direction: Direction) -> Point {
+        return switch direction {
+        case .Up:
+            (row: point.row, col: point.col + 1)
+        case .Right:
+            (row: point.row + 1, col: point.col)
+        case .Down:
+            (row: point.row, col: point.col - 1)
+        case .Left:
+            (row: point.row - 1, col: point.col)
+        }
     }
 
     private mutating func parse(input: [String]) -> [[Character]] {
@@ -119,4 +203,11 @@ public struct Day10 {
 
         return "."
     }
+}
+
+private enum Direction {
+    case Up
+    case Right
+    case Down
+    case Left
 }
