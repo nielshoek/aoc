@@ -1,1 +1,2 @@
-Day7().Run()
+var x = Day10()
+x.Run()
