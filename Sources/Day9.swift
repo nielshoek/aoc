@@ -29,7 +29,28 @@ public struct Day9 {
     }
 
     public func LogicB(input: [String]) -> Int {
-        0
+        var count = 0
+        let ints = parse(input: input)
+        for range in ints {
+            var seq = range
+            var first = [Int]()
+            while seq.filter({ $0 != 0 }).count != 0 {
+                var next = [Int]()
+                first.append(seq.first!)
+                for i in 0..<seq.count-1 {
+                    next.append(seq[i+1]-seq[i])
+                }
+                seq = next
+            }
+            var last = 0
+            for f in first.reversed() {
+                let val = f - last
+                last = val
+            }
+            count += last
+        }
+
+        return count
     }
 
     private func parse(input: [String]) -> [[Int]] {
