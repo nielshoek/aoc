@@ -3,9 +3,19 @@ import Foundation
 
 typealias Point = (row: Int, col: Int)
 
+let test = [
+"777777",
+".F--77",
+".|..|7",
+".|..|.",
+".L--S.",
+"......",
+]
+
 public struct Day10 {
     public mutating func Run() {
         let data = "Inputs/day10.txt".ToStringArray()
+        print("Test: \(LogicB(input: test))")
         print("Part 1: \(LogicA(input: data))")
         print("Part 2: \(LogicB(input: data))")
     }
@@ -112,37 +122,98 @@ public struct Day10 {
         return (point, .Up)
     }
 
-    public mutating func LogicB(input: [String]) -> Int {
+    public mutating func LogicB(input: [String]) -> (Int, Int) {
         visitedFields = [String: Int]()
         grid = parse(input: input)
         let point = findSPosition(input: grid)
         
         let startingPoint = determineStartPoint(point: point)
+        grid[point.row][point.col] = "X"
         
         markPath(point: startingPoint.0, direction: startingPoint.1)
-        walkPath(point: point)
+        let result = walkPath(point: point)
 
-        return 0
+        for line in grid {
+            print(String(line))
+        }
+        print()
+
+
+        return result
     }
 
-    private mutating func walkPath(point: Point) {
+    private mutating func walkPath(point: Point) -> (Int, Int) {
         // Up       -> Right
         // Right    -> Down
         // Left     -> Up
         // Down     -> Left
+        var nrOfFloodedFields = 0
         var currentPoint = point
         for direction in steps {
             let directionToCheck = determineDirectionToCheck(direction: direction)
             let pointToCheck = directionToCheck.getPoint(from: currentPoint)
-            // 1. Do the check
-            flood(point: pointToCheck)
+            // 1. Do the check (flood)
+            nrOfFloodedFields += flood(point: pointToCheck)
 
             // 2. Change point
-
-
             currentPoint = direction.getPoint(from: currentPoint)
-            print("Current point: \(currentPoint)")
         }
+        // print("Flooded fields: \(nrOfFloodedFields)")
+        let otherHalf = grid.count * grid[0].count - (steps.count + 1) - nrOfFloodedFields
+        // print("Or: \(otherHalf)")
+        return (nrOfFloodedFields, otherHalf)
+    }
+
+    private mutating func flood(point: Point) -> Int {
+        let fieldChar = getField(point: point)
+        guard fieldChar != "X" && fieldChar != "_" else {
+            return 0
+        }
+
+        guard point.row > -1 && point.row < grid.count 
+            && point.col > -1 && point.col < grid[0].count else {
+            return 0
+        }
+        
+        grid[point.row][point.col] = "_"
+        var result = 1
+
+        // Row above
+        if point.row > 0 {
+            // Left
+            if point.col > 0 {
+                result += flood(point: (row: point.row - 1, col: point.col - 1))
+            }
+            // Middle
+            result += flood(point: (row: point.row - 1, col: point.col))
+            // Right
+            if point.col + 1 < grid[point.row-1].count {
+                result += flood(point: (row: point.row - 1, col: point.col + 1))
+            }
+        }
+        // Left
+        if point.col > 0 {
+            result += flood(point: (row: point.row, col: point.col - 1))
+        }
+        // Right
+        if point.col + 1 < grid[point.row].count {
+            result += flood(point: (row: point.row, col: point.col + 1))
+        }
+        // Row below
+        if point.row + 1 < grid.count {
+            // Left
+            if point.col > 0 {
+                result += flood(point: (row: point.row + 1, col: point.col - 1))
+            }
+            // Middle
+            result += flood(point: (row: point.row + 1, col: point.col))
+            // Right
+            if point.col + 1 < grid[point.row+1].count {
+                result += flood(point: (row: point.row + 1, col: point.col + 1))
+            }
+        }
+
+        return result
     }
 
     fileprivate var steps = [Direction]()
