@@ -1,6 +1,8 @@
 import DequeModule
 import Foundation
 
+typealias Point = (row: Int, col: Int)
+
 public struct Day10 {
     public mutating func Run() {
         let data = "Inputs/day10.txt".ToStringArray()
@@ -8,7 +10,6 @@ public struct Day10 {
         print("Part 2: \(LogicB(input: data))")
     }
 
-    typealias Point = (row: Int, col: Int)
     var grid = [[Character]]()
     var visitedFields = [String: Int]()
     var queue = Deque<(Point, Int)>()
@@ -83,39 +84,82 @@ public struct Day10 {
         }
     }
 
+    fileprivate mutating func determineStartPoint(point: (row: Int, col: Int)) -> (Point, Direction) {
+        let up = (row: point.row - 1, col: point.col)
+        let upChar = getField(point: up)
+        if upChar == "|" || upChar == "7" || upChar == "F" {
+            return (up, .Up)
+        }
+
+        let right = (row: point.row, col: point.col + 1)
+        let rightChar = getField(point: right)
+        if rightChar == "-" || rightChar == "J" || rightChar == "7" {
+            return (right, .Right)
+        }
+
+        let down = (row: point.row + 1, col: point.col)
+        let downChar = getField(point: down)
+        if downChar == "|" || downChar == "J" || downChar == "L" {
+            return (down, .Down)
+        }
+
+        let left = (row: point.row, col: point.col - 1)
+        let leftChar = getField(point: left)
+        if leftChar == "-" || leftChar == "F" || leftChar == "L" {
+            return (left, .Left)
+        }
+
+        return (point, .Up)
+    }
+
     public mutating func LogicB(input: [String]) -> Int {
         visitedFields = [String: Int]()
         grid = parse(input: input)
         let point = findSPosition(input: grid)
-        markPath(point: point)
+        
+        let startingPoint = determineStartPoint(point: point)
+        
+        markPath(point: startingPoint.0, direction: startingPoint.1)
         walkPath(point: point)
 
         return 0
     }
 
     private mutating func walkPath(point: Point) {
-        
+        // Up       -> Right
+        // Right    -> Down
+        // Left     -> Up
+        // Down     -> Left
+        var currentPoint = point
+        for direction in steps {
+            let directionToCheck = determineDirectionToCheck(direction: direction)
+            let pointToCheck = directionToCheck.getPoint(from: currentPoint)
+            // 1. Do the check
+            flood(point: pointToCheck)
+
+            // 2. Change point
+
+
+            currentPoint = direction.getPoint(from: currentPoint)
+            print("Current point: \(currentPoint)")
+        }
     }
 
+    fileprivate var steps = [Direction]()
+
     fileprivate var queue2 = Deque<(Point, Direction)>()
-    private mutating func markPath(point: Point) {
-        queue2.append((point, .Up))
-        while !queue.isEmpty {
+    private mutating func markPath(point: Point, direction: Direction) {
+        queue2.append((point, direction))
+        while !queue2.isEmpty {
             let pointAndDirection = queue2.popFirst()!
             let cur = pointAndDirection.0
             let direction = pointAndDirection.1
-            grid[cur.row][cur.col] = "X"
-            // Up       -> Right
-            // Right    -> Down
-            // Down     -> Left
-            // Left     -> Up
-
 
             let signature = String(cur.row) + ":" + String(cur.col)
             visitedFields[signature] = 1
             let curChar = grid[cur.row][cur.col]
 
-            if curChar == "|" || curChar == "L" || curChar == "J" || curChar == "S" {
+            if curChar == "|" || curChar == "L" || curChar == "J" {
                 let up = (row: cur.row - 1, col: cur.col)
                 let upChar = getField(point: up)
                 if upChar == "|" || upChar == "7" || upChar == "F" {
@@ -126,7 +170,7 @@ public struct Day10 {
                 }
             }
 
-            if curChar == "-" || curChar == "L" || curChar == "F" || curChar == "S" {
+            if curChar == "-" || curChar == "L" || curChar == "F" {
                 let right = (row: cur.row, col: cur.col + 1)
                 let rightChar = getField(point: right)
                 if rightChar == "-" || rightChar == "J" || rightChar == "7" {
@@ -137,7 +181,7 @@ public struct Day10 {
                 }
             }
 
-            if curChar == "|" || curChar == "7" || curChar == "F" || curChar == "S" {
+            if curChar == "|" || curChar == "7" || curChar == "F" {
                 let down = (row: cur.row + 1, col: cur.col)
                 let downChar = getField(point: down)
                 if downChar == "|" || downChar == "J" || downChar == "L" {
@@ -148,7 +192,7 @@ public struct Day10 {
                 }
             }
 
-            if curChar == "-" || curChar == "7" || curChar == "J" || curChar == "S" {
+            if curChar == "-" || curChar == "7" || curChar == "J" {
                 let left = (row: cur.row, col: cur.col - 1)
                 let leftChar = getField(point: left)
                 if leftChar == "-" || leftChar == "F" || leftChar == "L" {
@@ -158,6 +202,9 @@ public struct Day10 {
                     }
                 }
             }
+
+            grid[cur.row][cur.col] = "X" //direction.Char
+            steps.append(direction)
         }
     }
 
@@ -203,6 +250,19 @@ public struct Day10 {
 
         return "."
     }
+
+    private mutating func determineDirectionToCheck(direction: Direction) -> Direction {
+        return switch direction {
+        case .Up:
+            .Right
+        case .Right:
+            .Down
+        case .Down:
+            .Left
+        case .Left:
+            .Up
+        }
+    }
 }
 
 private enum Direction {
@@ -210,4 +270,45 @@ private enum Direction {
     case Right
     case Down
     case Left
+
+    var Char: Character {
+        return switch self {
+        case .Up:
+            "U"
+        case .Right:
+            "R"
+        case .Down:
+            "D"
+        case .Left:
+            "L"
+        }
+    }
+
+    static func from(char: Character) -> Direction {
+        return switch char {
+        case "U":
+            .Up
+        case "R":
+            .Right
+        case "D":
+            .Down
+        case "L":
+            .Left
+        default:
+            .Up
+        }
+    }
+
+    func getPoint(from: Point) -> Point {
+        return switch self {
+        case .Up:
+            (row: from.row - 1, col: from.col)
+        case .Right:
+            (row: from.row, col: from.col + 1)
+        case .Down:
+            (row: from.row + 1, col: from.col)
+        case .Left:
+            (row: from.row, col: from.col - 1)
+        }
+    }
 }
