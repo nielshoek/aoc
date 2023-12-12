@@ -1,2 +1,1 @@
-var x = Day10()
-x.Run()
+Day11().Run()

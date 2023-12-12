@@ -13,3 +13,6 @@ swiftf:
 
 swiftd:
 	swift run
+
+bm:
+	time ./.build/debug/aoc-2023-swift
