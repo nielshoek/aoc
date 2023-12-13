@@ -21,9 +21,8 @@ public struct Day11 {
     public func Run() {
         print()
         let data = "Inputs/day11.txt".ToStringArray()
-        print("Part test: \(LogicA(input: testMap))")
-        // print("Part 1: \(LogicA(input: data))")
-        print("Part 2: \(LogicB(input: testMap))")
+        print("Part 1: \(LogicA(input: data))")
+        print("Part 2: \(LogicB(input: data))")
     }
 
     public func LogicA(input: [String]) -> Int {
@@ -32,12 +31,10 @@ public struct Day11 {
         }
         grid = expandGrid(grid)
         let galaxies = extractGalaxyPoints(grid)
-// grid.print()
         var distanceAccumulator = 0
         for (i, currentGalaxy) in galaxies.enumerated() {
             for otherGalaxy in galaxies.dropFirst(i) {
                 let distance = currentGalaxy.distance(from: otherGalaxy)
-                print("A: \(distance)")
                 distanceAccumulator += distance
             }
         }
@@ -46,18 +43,28 @@ public struct Day11 {
     }
 
     public func LogicB(input: [String]) -> Int {
-        var grid = input.reduce(into: [[Character]]()) { acc, cur in
+        let grid = input.reduce(into: [[Character]]()) { acc, cur in
             acc.append(cur.map(Character.init))
         }
-        grid = expandGrid2(grid)
+        let (expandedRows, expandedCols) = getExpandedColsAndRows(grid)
         let galaxies = extractGalaxyPoints(grid)
-// grid.print()
         var distanceAccumulator = 0
         for (i, currentGalaxy) in galaxies.enumerated() {
             for otherGalaxy in galaxies.dropFirst(i) {
-                let distance = currentGalaxy.distance(from: otherGalaxy)
-                print("B: \(distance)")
-                distanceAccumulator += distance
+                let initialDistance = currentGalaxy.distance(from: otherGalaxy)
+                let rowRange = min(currentGalaxy.row, otherGalaxy.row) ..<
+                    max(currentGalaxy.row, otherGalaxy.row)
+                let colRange = min(currentGalaxy.col, otherGalaxy.col) ..<
+                    max(currentGalaxy.col, otherGalaxy.col)
+                let nrOfExpandedRowsHit: Int = expandedRows.reduce(0) { acc, cur in
+                    rowRange.contains(cur) ? acc + 1 : acc
+                }
+                let nrOfExpandedColsHit: Int = expandedCols.reduce(0) { acc, cur in
+                    colRange.contains(cur) ? acc + 1 : acc
+                }
+                let nrOfExpansionsHit = nrOfExpandedRowsHit + nrOfExpandedColsHit
+                let finalDistance = initialDistance - nrOfExpansionsHit + nrOfExpansionsHit * 1_000_000
+                distanceAccumulator += finalDistance
             }
         }
 
@@ -119,49 +126,25 @@ public struct Day11 {
         return result
     }
 
-    private func expandGrid2(_ originalGrid: [[Character]]) -> [[Character]] {
-        let EXPAND_FACTOR = 2
-        var result = [[Character]]()
-        var colsToExpand = [Int]()
-        outer: for i in 0 ..< originalGrid[0].count {
-            for row in originalGrid {
+    private func getExpandedColsAndRows(_ grid: [[Character]]) -> ([Int], [Int]) {
+        var expandedCols = [Int]()
+        outer: for i in 0 ..< grid[0].count {
+            for row in grid {
                 if row[i] == "#" {
                     continue outer
                 }
             }
-            colsToExpand.append(i)
+            expandedCols.append(i)
         }
 
-        var gridWithDoubledRows = [[Character]]()
-        for (i, row) in originalGrid.enumerated() {
-            if row.contains("#") {
-                gridWithDoubledRows.append(row)
-            } else {
-                for _ in 0 ..< EXPAND_FACTOR {
-                    gridWithDoubledRows.append(row)
-                }
+        var expandedRows = [Int]()
+        for (i, row) in grid.enumerated() {
+            if !row.contains("#") {
+                expandedRows.append(i)
             }
         }
 
-        for _ in 0 ..< gridWithDoubledRows.count {
-            result.append([Character]())
-        }
-
-        var lastCol = 0
-        for i in colsToExpand {
-            for rowIndex in 0 ..< gridWithDoubledRows.count {
-                let part = gridWithDoubledRows[rowIndex][lastCol ..< i]
-                result[rowIndex].append(contentsOf: part)
-                result[rowIndex].append(contentsOf: [Character](repeating: ".", count: EXPAND_FACTOR - 1))
-            }
-            lastCol = i
-        }
-        for rowIndex in 0 ..< gridWithDoubledRows.count {
-            let part = gridWithDoubledRows[rowIndex][lastCol ..< gridWithDoubledRows[rowIndex].count]
-            result[rowIndex].append(contentsOf: part)
-        }
-
-        return result
+        return (expandedRows, expandedCols)
     }
 }
 
