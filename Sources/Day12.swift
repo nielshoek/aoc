@@ -35,15 +35,12 @@ let test12 = [
     "?????????.??##? 1,2,1,1,5",
 ]
 
-public struct Day12 {
+public class Day12 {
     public func Run() {
         print()
         let data = "Inputs/day12.txt".ToStringArray()
-        // print("Part 1: \(LogicA(input: data))")
-        // print("Part 1 Test: \(LogicA(input: test12))")
-        // print()
-        // print("Part 2 Test: \(LogicB(input: test12))")
-        print("Part 2: \(LogicB(input: data)))")
+        print("Part 1: \(LogicA(input: data))")
+        print("Part 2: \(LogicB(input: data))")
     }
 
     public func LogicA(input: [String]) -> Int {
@@ -59,72 +56,15 @@ public struct Day12 {
         let parts = line.split(separator: " ")
         let row = String(parts[0])
         let groups = parseGroups(line: parts[1])
-        return helper(SpringRow(row: row, groups: groups), groups, 0)
-    }
-
-    private func helper(_ springRow: SpringRow, _ groups: [Int], _ lower: Int) -> Int {
-        var result = 0
-        if groups.isEmpty {
-            return springRow.isValid
-                ? 1
-                : 0
-        }
-
-        let newRow = springRow.row
-        let rgx = try! Regex("[#]+")
-        let rngs = newRow.ranges(of: rgx)
-        if rngs.count > springRow.groups.count {
-            return 0
-        }
-
-        var groups = groups
-        let originalRow = springRow.row
-        var rowForRegex = springRow.row
-        var chars = [Character](rowForRegex)
-        for i in 0 ..< lower {
-            chars[i] = "_"
-        }
-        rowForRegex = String(chars)
-        let len = groups.removeLast()
-        let regex = try! Regex("[?#]{\(len)}")
-        var ranges = [Range<Int>]()
-        while let regexMatch = rowForRegex.firstMatch(of: regex) {
-            let low = regexMatch.range.lowerBound.distance(in: rowForRegex)
-            let high = regexMatch.range.upperBound.distance(in: rowForRegex)
-            ranges.append(low ..< high)
-            var chars = [Character](rowForRegex)
-            chars[low] = "_"
-            rowForRegex = String(chars)
-        }
-
-        for range in ranges {
-            var chars = [Character](originalRow)
-            var leftChar = Character(".")
-            if range.lowerBound > 0 {
-                leftChar = chars[range.lowerBound - 1]
-            }
-            var rightChar = Character(".")
-            if range.upperBound + 1 < chars.count {
-                rightChar = chars[range.upperBound]
-            }
-            if leftChar != "#", rightChar != "#" {
-                for i in range {
-                    chars[i] = "#"
-                }
-
-                result += helper(SpringRow(row: String(chars), groups: springRow.groups),
-                                 groups,
-                                 range.upperBound)
-            }
-        }
-
-        return result
+        return helper(SpringRow(row: row, groups: groups), groups)
     }
 
     public func LogicB(input: [String]) -> Int {
         var count = 0
-        for (_, line) in input.enumerated() {
-            count += checkPossibilities2(for: line)
+        for (i, line) in input.enumerated() {
+            print("Line \(i)")
+
+            count += checkPossibilities2(for: line.timesFive)
         }
 
         return count
@@ -134,10 +74,17 @@ public struct Day12 {
         let parts = line.split(separator: " ")
         let row = String(parts[0])
         let groups = parseGroups(line: parts[1])
-        return helper2(SpringRow(row: row, groups: groups), groups)
+        return helper(SpringRow(row: row, groups: groups), groups)
     }
 
-    private func helper2(_ springRow: SpringRow, _ groups: [Int]) -> Int {
+    var cache = [String: Int]()
+
+    private func helper(_ springRow: SpringRow, _ groups: [Int]) -> Int {
+        let cacheKey = springRow.row + groups.reduce(into: "") { acc, cur in acc += String(cur) }
+        if let result = cache[cacheKey] {
+            return result
+        }
+
         var result = 0
         if groups.isEmpty {
             if springRow.row.filter({ $0 == "#" }).isEmpty {
@@ -145,13 +92,6 @@ public struct Day12 {
             }
             return 0
         }
-
-        // 1. Calculate length of other groups
-        // 2. Determine range of possible positions
-        // 3. Loop over range and check for each position if possible
-        // 4. If possible -> 1. Cut of part where placed
-        //                   2. Call helper with leftover and less groups
-        //                   3. Check leftover / groups
 
         var groups = groups
         let originalRow = springRow.row
@@ -189,13 +129,13 @@ public struct Day12 {
                 var springRow = springRow
                 if (range.upperBound) < chars.count {
                     springRow.row = String(chars[(range.upperBound + 1)...])
-                    result += helper2(springRow, groups)
+                    result += helper(springRow, groups)
                 } else if range.upperBound == chars.count && groups.isEmpty {
                     result += 1
                 }
             }
         }
-
+        cache[cacheKey] = result
         return result
     }
 
