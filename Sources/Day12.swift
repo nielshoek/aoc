@@ -29,20 +29,19 @@ extension SpringRow {
     }
 }
 
-// let test12 = [
-//     "??????.??#. 2,3",
-//     "??.?###????????? 2,4,4",
-//     "?????????.??##? 1,2,1,1,5",
-// ]
+let test12 = [
+    "??????.??#. 2,3",
+    "??.?###????????? 2,4,4",
+    "?????????.??##? 1,2,1,1,5",
+]
 
 public struct Day12 {
     public func Run() {
         print()
         let data = "Inputs/day12.txt".ToStringArray()
         // print("Part 1: \(LogicA(input: data))")
-        print("Part 1: \(LogicA(input: data))")
         // print("Part 1 Test: \(LogicA(input: test12))")
-        print()
+        // print()
         // print("Part 2 Test: \(LogicB(input: test12))")
         print("Part 2: \(LogicB(input: data)))")
     }
@@ -125,8 +124,6 @@ public struct Day12 {
     public func LogicB(input: [String]) -> Int {
         var count = 0
         for (_, line) in input.enumerated() {
-            // print("Line: \(i + 1)")
-
             count += checkPossibilities2(for: line)
         }
 
@@ -160,20 +157,14 @@ public struct Day12 {
         let originalRow = springRow.row
         let len = groups.removeLast()
 
-        let indexOfLowestNumberSign = originalRow.firstIndex(of: "#")?.distance(in: originalRow)
-            ?? Int.max
+        let indexOfLowestNumberSign = originalRow
+            .firstIndex(of: "#")?
+            .distance(in: originalRow) ?? Int.max
         let minLenForOtherGroups = groups.reduce(0) { acc, cur in acc + cur + 1 }
         let indexBasedOnLengthOfOthers = originalRow.count - (minLenForOtherGroups + len)
         let minLowestIndex = min(indexOfLowestNumberSign, indexBasedOnLengthOfOthers)
         let endIndex = minLowestIndex + len
         var rowForRegex = springRow.row.dropLast(springRow.row.count - endIndex)
-
-        // print(len)
-        // print(originalRow)
-        // print("0123456789")
-        // print(endIndex)
-        // print(rowForRegex)
-        // print()
 
         let regex = try! Regex("[?#]{\(len)}")
         var ranges = [Range<Int>]()
@@ -188,26 +179,19 @@ public struct Day12 {
 
         for range in ranges {
             let chars = [Character](originalRow)
-            var rightNeighbor = Character(".")
-            if range.upperBound < chars.count {
-                rightNeighbor = chars[range.upperBound]
-            }
-            var leftNeighbor = Character(".")
-            if range.lowerBound > 0 {
-                leftNeighbor = chars[range.lowerBound - 1]
-            }
+            let rightNeighbor = range.upperBound < chars.count
+                ? chars[range.upperBound]
+                : Character(".")
+            let leftNeighbor = range.lowerBound > 0
+                ? chars[range.lowerBound - 1]
+                : Character(".")
             if leftNeighbor != "#" && rightNeighbor != "#" {
                 var springRow = springRow
                 if (range.upperBound) < chars.count {
                     springRow.row = String(chars[(range.upperBound + 1)...])
                     result += helper2(springRow, groups)
                 } else if range.upperBound == chars.count && groups.isEmpty {
-                    if chars.filter({ $0 == "#"}).count > 1 && len == 1 {
-                        print(chars, len)
-                    }
-                    if chars[range.upperBound - 1] != "#" {
-                        result += 1
-                    }
+                    result += 1
                 }
             }
         }
