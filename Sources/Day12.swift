@@ -1,9 +1,5 @@
 import Foundation
 
-struct SpringRow {
-    var row: String
-}
-
 public class Day12 {
     public func Run() {
         print()
@@ -25,7 +21,7 @@ public class Day12 {
         let parts = line.split(separator: " ")
         let row = String(parts[0])
         let groups = parseGroups(line: parts[1])
-        return helper(SpringRow(row: row), groups)
+        return helper(row, groups)
     }
 
     public func LogicB(input: [String]) -> Int {
@@ -41,27 +37,27 @@ public class Day12 {
         let parts = line.split(separator: " ")
         let row = String(parts[0])
         let groups = parseGroups(line: parts[1])
-        return helper(SpringRow(row: row), groups)
+        return helper(row, groups)
     }
 
     var cache = [String: Int]()
 
-    private func helper(_ springRow: SpringRow, _ groups: [Int]) -> Int {
-        let cacheKey = springRow.row + groups.reduce(into: "") { acc, cur in acc += String(cur) }
+    private func helper(_ springRow: String, _ groups: [Int]) -> Int {
+        let cacheKey = springRow + groups.reduce(into: "") { acc, cur in acc += String(cur) }
         if let result = cache[cacheKey] {
             return result
         }
 
         var result = 0
         if groups.isEmpty {
-            if springRow.row.filter({ $0 == "#" }).isEmpty {
+            if springRow.filter({ $0 == "#" }).isEmpty {
                 return 1
             }
             return 0
         }
 
         var groups = groups
-        let originalRow = springRow.row
+        let originalRow = springRow
         let len = groups.removeLast()
 
         let indexOfLowestNumberSign = originalRow
@@ -71,7 +67,7 @@ public class Day12 {
         let indexBasedOnLengthOfOthers = originalRow.count - (minLenForOtherGroups + len)
         let minLowestIndex = min(indexOfLowestNumberSign, indexBasedOnLengthOfOthers)
         let endIndex = minLowestIndex + len
-        var rowForRegex = springRow.row.dropLast(springRow.row.count - endIndex)
+        var rowForRegex = springRow.dropLast(springRow.count - endIndex)
 
         let regex = try! Regex("[?#]{\(len)}")
         var ranges = [Range<Int>]()
@@ -95,7 +91,7 @@ public class Day12 {
             if leftNeighbor != "#" && rightNeighbor != "#" {
                 var springRow = springRow
                 if (range.upperBound) < chars.count {
-                    springRow.row = String(chars[(range.upperBound + 1)...])
+                    springRow = String(chars[(range.upperBound + 1)...])
                     result += helper(springRow, groups)
                 } else if range.upperBound == chars.count && groups.isEmpty {
                     result += 1
