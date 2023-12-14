@@ -61,9 +61,7 @@ public class Day12 {
 
     public func LogicB(input: [String]) -> Int {
         var count = 0
-        for (i, line) in input.enumerated() {
-            print("Line \(i)")
-
+        for line in input {
             count += checkPossibilities2(for: line.timesFive)
         }
 
