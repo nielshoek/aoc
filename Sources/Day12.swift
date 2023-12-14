@@ -1,39 +1,8 @@
 import Foundation
 
 struct SpringRow {
-    let original: String
     var row: String
-    let groups: [Int]
-
-    init(row: String, groups: [Int]) {
-        original = row
-        self.row = row
-        self.groups = groups
-    }
 }
-
-extension SpringRow {
-    var isValid: Bool {
-        let regex = try! Regex("[#]+")
-        let ranges = original.ranges(of: regex)
-        if ranges.count != groups.count {
-            return false
-        }
-        for i in 0 ..< ranges.count {
-            let range = ranges[i]
-            if original[range].count != groups.reversed()[i] {
-                return false
-            }
-        }
-        return true
-    }
-}
-
-let test12 = [
-    "??????.??#. 2,3",
-    "??.?###????????? 2,4,4",
-    "?????????.??##? 1,2,1,1,5",
-]
 
 public class Day12 {
     public func Run() {
@@ -56,7 +25,7 @@ public class Day12 {
         let parts = line.split(separator: " ")
         let row = String(parts[0])
         let groups = parseGroups(line: parts[1])
-        return helper(SpringRow(row: row, groups: groups), groups)
+        return helper(SpringRow(row: row), groups)
     }
 
     public func LogicB(input: [String]) -> Int {
@@ -72,7 +41,7 @@ public class Day12 {
         let parts = line.split(separator: " ")
         let row = String(parts[0])
         let groups = parseGroups(line: parts[1])
-        return helper(SpringRow(row: row, groups: groups), groups)
+        return helper(SpringRow(row: row), groups)
     }
 
     var cache = [String: Int]()
