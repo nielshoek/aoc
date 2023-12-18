@@ -10,8 +10,7 @@ struct Point {
 public struct Day10 {
     public mutating func Run() {
         let data = "Inputs/day10.txt".ToStringArray()
-        // print("Part 1: \(LogicA(input: data))")
-        print("Part 2 (test): \(LogicB(input: test))")
+        print("Part 1: \(LogicA(input: data))")
         print("Part 2: \(LogicB(input: data))")
     }
 

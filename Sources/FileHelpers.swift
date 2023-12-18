@@ -23,4 +23,8 @@ extension String {
     func ToStringArray() -> [String] {
         FileHelpers.ReadFileToStringArray(path: self)
     }
+
+    func ToString() -> String {
+        FileHelpers.ReadFileToString(path: self)!
+    }
 }

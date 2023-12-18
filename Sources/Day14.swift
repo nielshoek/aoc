@@ -1,27 +1,65 @@
-let test = [
-    "O....#....",
-    "O.OO#....#",
-    ".....##...",
-    "OO.#O....O",
-    ".O.....O#.",
-    "O.#..O.#.#",
-    "..O..#O..O",
-    ".......O..",
-    "#....###..",
-    "#OO..#....",
-]
-
-public struct Day14 {
+public class Day14 {
     public func Run() {
         let data = "Inputs/day14.txt".ToStringArray()
-        print("Part TEST: \(LogicA(input: test))")
         print("Part 1: \(LogicA(input: data))")
-        // print("Part 2: \(LogicB(input: data))")
+        print("Part 2: \(LogicB(input: data))")
     }
 
     public func LogicA(input: [String]) -> Int {
         var grid = input.map([Character].init)
-        grid.printCompact()
+        for (i, row) in grid.enumerated() {
+            for (j, char) in row.enumerated() {
+                if char == "O" {
+                    grid.move(row: i, col: j, direction: .East)
+                }
+            }
+        }
+        var count = 0
+        for i in 0 ..< grid.count {
+            count += grid[i].filter { $0 == "O" }.count * (grid.count - i)
+        }
+
+        return count
+    }
+
+    public func LogicB(input: [String]) -> Int {
+        var grid = input.map([Character].init)
+        while cycle < 1_000_000_000 {
+            grid = Cycle(grid: &grid)
+            cycle += 1
+        }
+        var count = 0
+        for i in 0 ..< grid.count {
+            count += grid[i].filter { $0 == "O" }.count * (grid.count - i)
+        }
+        return count
+    }
+
+    var cycle: Int64 = 0
+    var cache = [[[Character]]: [[Character]]]()
+    var firstTime: Int64 = -1
+    var firstTimeGrid = [[Character]]()
+    var cycleDetected = false
+
+    private func Cycle(grid: inout [[Character]]) -> [[Character]] {
+        let oldGrid = grid
+        if let newGrid = cache[oldGrid] {
+            if !cycleDetected {
+                if firstTime < 0 {
+                    firstTime = cycle
+                    firstTimeGrid = newGrid
+                } else if newGrid == firstTimeGrid {
+                    let cycleSize = cycle - firstTime
+                    let leftover = 1_000_000_000 - cycle
+                    let mulply = leftover / cycleSize
+                    let newCycle = cycle + mulply * cycleSize
+                    cycle = newCycle
+                }
+            }
+            return newGrid
+        }
+
+        // North
         for (i, row) in grid.enumerated() {
             for (j, char) in row.enumerated() {
                 if char == "O" {
@@ -29,18 +67,33 @@ public struct Day14 {
                 }
             }
         }
-        var count = 0
-        for i in 0..<grid.count {
-            count += grid[i].filter({ $0 == "O" }).count * (grid.count - i)
+        // West
+        for i in 0 ..< grid[0].count {
+            for j in 0 ..< grid.count {
+                if grid[j][i] == "O" {
+                    grid.move(row: j, col: i, direction: .West)
+                }
+            }
+        }
+        // South
+        for i in stride(from: grid.count - 1, through: 0, by: -1) {
+            for j in 0 ..< grid[i].count {
+                if grid[i][j] == "O" {
+                    grid.move(row: i, col: j, direction: .South)
+                }
+            }
+        }
+        // East
+        for i in stride(from: grid[0].count - 1, through: 0, by: -1) {
+            for j in 0 ..< grid.count {
+                if grid[j][i] == "O" {
+                    grid.move(row: j, col: i, direction: .East)
+                }
+            }
         }
 
-        grid.printCompact()
-
-        return count
-    }
-
-    public func LogicB(input _: [String]) -> Int {
-        0
+        cache[oldGrid] = grid
+        return grid
     }
 }
 
