@@ -1,7 +1,7 @@
 import DequeModule
 import Foundation
 
-let test = [
+let test10 = [
     "777777....", // 1
     ".F--77....",
     ".S..|7....",

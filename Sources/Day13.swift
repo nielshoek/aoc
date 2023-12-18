@@ -7,7 +7,6 @@ public struct Day13 {
 
     public func LogicA(input: [String]) -> Int {
         let blocks = input.split(separator: "")
-
         var totalScore = 0
         for block in blocks {
             let rowScore = getRowScore(block: Array(block))
@@ -19,8 +18,7 @@ public struct Day13 {
     }
 
     public func LogicB(input: [String]) -> Int {
-        let blocks = input.split(separator: "")
-
+        let blocks = input.split(separator: "") 
         var totalScore = 0
         for block in blocks {
             let rowScore = getRowScore2(block: Array(block))
