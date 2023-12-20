@@ -170,6 +170,21 @@ enum Direction: String {
         }
     }
 
+    var opposite: Direction {
+        switch self {
+        case .North:
+            return .South
+        case .East:
+            return .West
+        case .South:
+            return .North
+        case .West:
+            return .East
+        default:
+            return .EastWest
+        }
+    }
+
     var mutator: Int {
         switch self {
         case .North, .West:
@@ -178,6 +193,21 @@ enum Direction: String {
             return 1
         default:
             return 0
+        }
+    }
+
+    var char: Character {
+        switch self {
+        case .North:
+            return "N"
+        case .East:
+            return "E"
+        case .South:
+            return "S"
+        case .West:
+            return "W"
+        default:
+            return "_"
         }
     }
 }
