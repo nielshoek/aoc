@@ -1,10 +1,6 @@
-let test = "rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"
-let testB = "rn,cm,qp,cm,qp,pc,ot,ab,pc,pc,ot"
-
 public struct Day15 {
     public func Run() {
         let data = "Inputs/day15.txt".ToString()
-        print("Part TEST: \(LogicA(input: test))")
         print("Part 1: \(LogicA(input: data))")
         print("Part 2: \(LogicB(input: data))")
     }

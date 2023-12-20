@@ -147,11 +147,13 @@ private extension [[Character]] {
     }
 }
 
-enum Direction {
+enum Direction: String {
     case North
     case East
     case South
     case West
+    case NorthSouth
+    case EastWest
 
     var moveDirection: (Int, Int) {
         switch self {
@@ -163,6 +165,8 @@ enum Direction {
             return (1, 0)
         case .West:
             return (0, -1)
+        default:
+            return (0, 0)
         }
     }
 
@@ -172,6 +176,8 @@ enum Direction {
             return -1
         case .East, .South:
             return 1
+        default:
+            return 0
         }
     }
 }
