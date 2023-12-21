@@ -8,19 +8,19 @@ public struct Day17 {
         print("Part 2: \(LogicB(input: data))")
     }
 
-    struct Walker {
+    fileprivate struct Walker {
         var row: Int
         var col: Int
         var lastSteps: [Direction]
         var score: Int
 
-        func canMove(to direction: Direction) -> Bool {
+        fileprivate func canMove(to direction: Direction) -> Bool {
             let lastThree = lastSteps.dropFirst(max(0, lastSteps.count - 3))
             return lastThree.filter { $0 == direction }.count < 3 &&
                 lastSteps.last != direction.opposite
         }
 
-        func canMove2(to direction: Direction) -> Bool {
+        fileprivate func canMove2(to direction: Direction) -> Bool {
             let last10 = lastSteps.dropFirst(max(0, lastSteps.count - 10))
             let index = last10.lastIndex(where: { $0 != last10.last })
             let nrOfSteps = if let index = index {
@@ -207,5 +207,70 @@ public struct Day17 {
         }
 
         return uniqueFieldScores["\(grid.count - 1):\(grid[grid.count - 1].count - 1)"]!
+    }
+}
+
+fileprivate enum Direction: String {
+    case North
+    case East
+    case South
+    case West
+    case NorthSouth
+    case EastWest
+
+    var moveDirection: (Int, Int) {
+        switch self {
+        case .North:
+            return (-1, 0)
+        case .East:
+            return (0, 1)
+        case .South:
+            return (1, 0)
+        case .West:
+            return (0, -1)
+        default:
+            return (0, 0)
+        }
+    }
+
+    var opposite: Direction {
+        switch self {
+        case .North:
+            return .South
+        case .East:
+            return .West
+        case .South:
+            return .North
+        case .West:
+            return .East
+        default:
+            return .EastWest
+        }
+    }
+
+    var mutator: Int {
+        switch self {
+        case .North, .West:
+            return -1
+        case .East, .South:
+            return 1
+        default:
+            return 0
+        }
+    }
+
+    var char: Character {
+        switch self {
+        case .North:
+            return "N"
+        case .East:
+            return "E"
+        case .South:
+            return "S"
+        case .West:
+            return "W"
+        default:
+            return "_"
+        }
     }
 }

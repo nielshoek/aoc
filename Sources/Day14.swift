@@ -147,7 +147,7 @@ private extension [[Character]] {
     }
 }
 
-enum Direction: String {
+private enum Direction: String {
     case North
     case East
     case South

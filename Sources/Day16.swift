@@ -8,7 +8,7 @@ public struct Day16 {
         print("Part 2: \(LogicB(input: data))")
     }
 
-    struct Beam {
+    fileprivate struct Beam {
         var row: Int
         var col: Int
         var direction: Direction
@@ -85,7 +85,7 @@ public struct Day16 {
 }
 
 extension [String: [Direction]] {
-    mutating func add(row: Int, col: Int, direction: Direction) {
+    fileprivate mutating func add(row: Int, col: Int, direction: Direction) {
         let key = "\(row):\(col)"
         if self[key] != nil {
             self[key]!.append(direction)
@@ -95,7 +95,7 @@ extension [String: [Direction]] {
         }
     }
 
-    mutating func remove(row: Int, col: Int, direction: Direction) {
+    fileprivate mutating func remove(row: Int, col: Int, direction: Direction) {
         let key = "\(row):\(col)"
         if let index = self[key]?.firstIndex(of: direction) {
             self[key]!.remove(at: index)
@@ -155,5 +155,70 @@ private extension Character {
         }
 
         return direction
+    }
+}
+
+fileprivate enum Direction: String {
+    case North
+    case East
+    case South
+    case West
+    case NorthSouth
+    case EastWest
+
+    var moveDirection: (Int, Int) {
+        switch self {
+        case .North:
+            return (-1, 0)
+        case .East:
+            return (0, 1)
+        case .South:
+            return (1, 0)
+        case .West:
+            return (0, -1)
+        default:
+            return (0, 0)
+        }
+    }
+
+    var opposite: Direction {
+        switch self {
+        case .North:
+            return .South
+        case .East:
+            return .West
+        case .South:
+            return .North
+        case .West:
+            return .East
+        default:
+            return .EastWest
+        }
+    }
+
+    var mutator: Int {
+        switch self {
+        case .North, .West:
+            return -1
+        case .East, .South:
+            return 1
+        default:
+            return 0
+        }
+    }
+
+    var char: Character {
+        switch self {
+        case .North:
+            return "N"
+        case .East:
+            return "E"
+        case .South:
+            return "S"
+        case .West:
+            return "W"
+        default:
+            return "_"
+        }
     }
 }
