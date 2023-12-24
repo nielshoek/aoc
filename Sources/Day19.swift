@@ -3,7 +3,7 @@ import DequeModule
 public struct Day19 {
     public func Run() {
         let data = "Inputs/day19.txt".ToStringArray()
-        // print("Part 1: \(LogicA(input: data))")
+        print("Part 1: \(LogicA(input: data))")
         print("Part 2: \(LogicB(input: data))")
     }
 
@@ -71,7 +71,7 @@ public struct Day19 {
                 switch char {
                 case "x":
                     var xRange: ClosedRange<Int>
-                    if flow.sign == "<" && ranges.x.lowerBound < flow.value {
+                    if flow.sign == "<" {
                         xRange = ranges.x.lowerBound ... min(max(flow.value - 1, ranges.x.lowerBound), ranges.x.upperBound)
                         ranges.x = max(min(flow.value, ranges.x.upperBound), ranges.x.lowerBound) ... ranges.x.upperBound
                     } else if flow.sign == ">" {
@@ -87,7 +87,7 @@ public struct Day19 {
                     queue.append((flow.next, newRanges))
                 case "m":
                     var mRange: ClosedRange<Int>
-                    if flow.sign == "<" && ranges.m.lowerBound < flow.value {
+                    if flow.sign == "<" {
                         mRange = ranges.m.lowerBound ... min(max(flow.value - 1, ranges.m.lowerBound), ranges.m.upperBound)
                         ranges.m = max(min(flow.value, ranges.m.upperBound), ranges.m.lowerBound) ... ranges.m.upperBound
                     } else if flow.sign == ">" {
@@ -103,7 +103,7 @@ public struct Day19 {
                     queue.append((flow.next, newRanges))
                 case "a":
                     var aRange: ClosedRange<Int>
-                    if flow.sign == "<" && ranges.a.lowerBound < flow.value {
+                    if flow.sign == "<" {
                         aRange = ranges.a.lowerBound ... min(max(flow.value - 1, ranges.a.lowerBound), ranges.a.upperBound)
                         ranges.a = max(min(flow.value, ranges.a.upperBound), ranges.a.lowerBound) ... ranges.a.upperBound
                     } else if flow.sign == ">" {
@@ -119,7 +119,7 @@ public struct Day19 {
                     queue.append((flow.next, newRanges))
                 case "s":
                     var sRange: ClosedRange<Int>
-                    if flow.sign == "<" && ranges.s.lowerBound < flow.value {
+                    if flow.sign == "<" {
                         sRange = ranges.s.lowerBound ... min(max(flow.value - 1, ranges.s.lowerBound), ranges.s.upperBound)
                         ranges.s = max(min(flow.value, ranges.s.upperBound), ranges.s.lowerBound) ... ranges.s.upperBound
                     } else if flow.sign == ">" {
@@ -152,10 +152,6 @@ public struct Day19 {
         }
 
         return result
-        // 14372248406663
-        // 131550418841958      C
-        // 143722484066630
-        // 126026760036084
     }
 
     struct PartRanges: Equatable {
