@@ -1,2 +1,2 @@
-let result = Day01().A()
+let result = Day01().B()
 print(result)

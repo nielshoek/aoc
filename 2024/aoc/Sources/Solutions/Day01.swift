@@ -16,4 +16,19 @@ class Day01 {
             acc + abs(cur.0 - cur.1)
         }
     }
+
+    func B() -> Int {
+        var occurrences = [Int: Int]()
+        let arr = FileHelpers.ReadFileToStringArray(path: "Sources/Inputs/day01.txt")
+            .map {
+                let parts = $0.components(separatedBy: "   ").compactMap { Int($0) }
+                occurrences[parts[1], default: 0] += 1
+                return parts[0]
+            }
+            
+        return arr.reduce(0) { acc, cur in
+            let nrOfTimesOccurring = occurrences[cur, default: 0]
+            return acc + (cur * nrOfTimesOccurring)
+        }
+    }
 }
