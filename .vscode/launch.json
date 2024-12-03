@@ -17,6 +17,24 @@
             "name": "Release aoc-2023-swift (2023)",
             "program": "${workspaceFolder:aoc}/2023/.build/release/aoc-2023-swift",
             "preLaunchTask": "swift: Build Release aoc-2023-swift (2023)"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:aoc}/2024/aoc",
+            "name": "Debug aoc (2024/aoc)",
+            "program": "${workspaceFolder:aoc}/2024/aoc/.build/debug/aoc",
+            "preLaunchTask": "swift: Build Debug aoc (2024/aoc)"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:aoc}/2024/aoc",
+            "name": "Release aoc (2024/aoc)",
+            "program": "${workspaceFolder:aoc}/2024/aoc/.build/release/aoc",
+            "preLaunchTask": "swift: Build Release aoc (2024/aoc)"
         }
     ]
 }
