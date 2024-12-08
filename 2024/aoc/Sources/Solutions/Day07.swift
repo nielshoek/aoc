@@ -1,20 +1,13 @@
 class Day07 {
     func A() -> Int {
-        var arr = FileHelpers.ReadFileToStringArray(path: "Sources/Inputs/day07.txt")
-
-        let lines = arr.map {
+        let lines = FileHelpers.ReadFileToStringArray(path: "Sources/Inputs/day07.txt").map {
             let parts = $0.split(separator: try! Regex(":? "))
             return (value: Int(parts[0])!, numbers: parts[1...].map { Int($0)! })
         }
-        
-        var result = 0
-        for line in lines {
-            if backtrack(line.value, line.numbers, 1, line.numbers[0]) {
-                result += line.value
-            }
+
+        return lines.reduce(0) { acc, line in
+            acc + (backtrack(line.value, line.numbers, 1, line.numbers[0]) ? line.value : 0)
         }
-        
-        return result
     }
     
     func backtrack(_ value: Int, _ nums: [Int], _ index: Int, _ acc: Int) -> Bool {
