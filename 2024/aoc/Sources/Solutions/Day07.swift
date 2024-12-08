@@ -26,6 +26,7 @@ class Day07 {
         }
         return 
             backtrack(value, nums, index + 1, acc + nums[index]) ||
-            backtrack(value, nums, index + 1, acc * nums[index])
+            backtrack(value, nums, index + 1, acc * nums[index]) ||
+            backtrack(value, nums, index + 1, Int(String(acc) + String(nums[index]))!)
     }
 }
