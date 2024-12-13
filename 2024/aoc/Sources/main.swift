@@ -1,5 +1,5 @@
 import Foundation
 
-let result = Day12().B()
+let result = Day13().A()
 
 print(result)
