@@ -78,7 +78,6 @@ class Day12 {
                 }
                 let char = grid[r][c]
                 let area = flood(&grid, &visited, r, c, char, "*")
-
                 var leftBorders = [[Bool]](
                     repeating: [Bool](repeating: false, count: grid[0].count),
                     count: grid.count)
